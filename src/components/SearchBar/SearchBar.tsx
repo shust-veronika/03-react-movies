@@ -1,4 +1,3 @@
-import type { FormEvent } from "react";
 import toast from "react-hot-toast";
 import styles from "./SearchBar.module.css";
 
@@ -7,39 +6,37 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onSubmit }: SearchBarProps) {
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = e.currentTarget;
-        const query = (form.elements.namedItem("query") as HTMLInputElement).value.trim();
+
+    const handleFormAction = async (formData: FormData) => {
+        const query = (formData.get("query") as string)?.trim() || "";
 
         if (!query) {
-            toast.error("Please enter your searh query.");
-            return
+            toast.error("Please enter your search query.");
+            return;
         }
 
         onSubmit(query);
-        form.reset();
     };
 
     return (
         <header className={styles.header}>
             <div className={styles.container}>
                 <a 
-                className={styles.link}
-                href="https://www.tremoviedb.org/"
-                target="_blank"
-                rel="noopener noreferrer"
+                    className={styles.link}
+                    href="https://www.tremoviedb.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
                     Powered by TMDB
                 </a>
-                <form className={styles.form} onSubmit={handleSubmit}>
+                <form className={styles.form} action={handleFormAction}>
                     <input 
-                    className={styles.input}
-                    name="query"
-                    type="text"
-                    placeholder="Search movies..."
-                    autoComplete="off"
-                    autoFocus
+                        className={styles.input}
+                        name="query"
+                        type="text"
+                        placeholder="Search movies..."
+                        autoComplete="off"
+                        autoFocus
                     />
                     <button className={styles.button} type="submit">
                         Search
